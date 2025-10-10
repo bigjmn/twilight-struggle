@@ -130,7 +130,7 @@ class Country:
         if defcon_level < 3 and self.region == Region.MIDDLE_EAST: return True 
         return False  
 
-
+# TODO Fix this shit 
 COUNTRIES: Dict[str, Country] = {
     # Europe
     "Canada": Country("Canada", Region.EUROPE, 4, battleground=True, adjacent_countries=["USA"]),

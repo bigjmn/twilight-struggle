@@ -1,7 +1,7 @@
 from ..game_sets.constants import Superpower
 from ..game_sets.cards import Card 
 
-
+# fix deetz for these 
 space_squares = [
     {
         "ops_required":2,
