@@ -77,6 +77,14 @@ class Country:
         
         return None
     
+    @property 
+    def has_us_influence(self):
+        return self.us_influence > 0 
+    @property 
+    def has_ussr_influence(self):
+        return self.ussr_influence > 0
+
+    
     @property
     def us_control(self) -> bool:
         return self.controlled_by == Superpower.USA
@@ -84,6 +92,43 @@ class Country:
     @property
     def ussr_control(self) -> bool:
         return self.controlled_by == Superpower.USSR
+    
+    # this wil also have to check special conditions 
+    def can_coup_or_realign(self, defcon_level, player:Superpower):
+        if not self._has_opp_influence(player):
+            return False 
+        if self._region_restricted(defcon_level):
+            return False 
+        return True 
+
+    # for using ops, not event triggered
+    def _has_access(self, player:Superpower):
+        if self._has_influence(player):
+            return True 
+        for a in self.adjacent_countries:
+            adj_country = COUNTRIES[a]
+            if adj_country._has_influence(player):
+                return True 
+        return False 
+    # get influence cost 
+    def influence_cost(self, player:Superpower):
+        opp_controlled = self.us_control if player == Superpower.USSR else self.ussr_control 
+        return 2 if opp_controlled else 1 
+
+    
+    def _has_influence(self, player:Superpower):
+        return self.has_us_influence if player == Superpower.USA else self.has_ussr_influence 
+
+    def _has_opp_influence(self, player:Superpower):
+        return self._opp_influence(player) > 0
+    
+    def _opp_influence(self, player:Superpower):
+        return self.us_influence if player == Superpower.USSR else self.ussr_influence
+    def _region_restricted(self, defcon_level):
+        if defcon_level < 5 and self.region == Region.EUROPE: return True 
+        if defcon_level < 4 and self.region == Region.ASIA: return True 
+        if defcon_level < 3 and self.region == Region.MIDDLE_EAST: return True 
+        return False  
 
 
 COUNTRIES: Dict[str, Country] = {
